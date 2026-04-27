@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>博馨診所｜支票簽收</title>
+  <!-- PWA manifest and icon -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<style>
+  :root{
+    --bg-a:#eef5ff;
+    --bg-b:#fff1f8;
+    --card:#ffffffee;
+    --text:#384665;
+    --muted:#73809b;
+    --line:#dfe6f3;
+    --brand:#6a7cff;
+    --brand2:#56d0c8;
+    --shadow:0 18px 55px rgba(73,91,140,.15);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(255,255,255,.7), transparent 20%),
+      radial-gradient(circle at bottom right, rgba(255,255,255,.6), transparent 18%),
+      linear-gradient(135deg,var(--bg-a),var(--bg-b));
+    min-height:100vh;
+  }
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:20px 14px 36px;
+  }
+  .panel{
+    overflow:hidden;
+    border-radius:34px;
+    background:var(--card);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:var(--shadow);
+    backdrop-filter: blur(8px);
+  }
+  .hero{
+    position:relative;
+    padding:28px 30px 24px;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,.95), transparent 20%),
+      radial-gradient(circle at 82% 16%, rgba(255,255,255,.8), transparent 18%),
+      linear-gradient(90deg,#e9f5ff 0%, #f8f3ff 48%, #fff1f7 100%);
+    border-bottom:1px solid #edf2f8;
+  }
+  .hero:after{
+    content:"";
+    position:absolute;
+    inset:auto 0 0 0;
+    height:4px;
+    background:linear-gradient(90deg,#dcebff,#fce2ef,#dff8f1);
+    opacity:.85;
+  }
+  .heroRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .titleWrap{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .icon{
+    width:72px;height:72px;border-radius:22px;
+    display:grid;place-items:center;
+    font-size:34px;
+    background:linear-gradient(180deg,#fff,#f9fbff);
+    border:1px solid #edf2f8;
+    box-shadow:0 10px 30px rgba(106,124,255,.16);
+  }
+  h1{
+    margin:0;
+    font-size:clamp(36px,5vw,64px);
+    line-height:1.05;
+    letter-spacing:.08em;
+    color:#4b567d;
+  }
+  .sub{
+    margin-top:6px;
+    font-size:18px;
+    color:var(--muted);
+    font-weight:700;
+    letter-spacing:.08em;
+  }
+  .company{
+    text-align:right;
+  }
+  .companyName{
+    font-size:clamp(22px,2.3vw,36px);
+    font-weight:900;
+    color:#576487;
+    letter-spacing:.05em;
+  }
+  .companyTag{
+    margin-top:8px;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    padding:8px 14px;
+    border-radius:999px;
+    background:rgba(255,255,255,.72);
+    border:1px solid #e8edf7;
+    color:#6a7490;
+    font-size:16px;
+    font-weight:800;
+  }
+  .tabs{
+    display:grid;
+    grid-template-columns: repeat(13, minmax(0,1fr));
+    gap:0;
+    border-bottom:1px solid #edf2f8;
+    background:linear-gradient(180deg,#f6f9ff,#fbfcff);
+  }
+  .tab{
+    padding:14px 8px;
+    text-align:center;
+    font-weight:900;
+    color:#7b86a0;
+    font-size:16px;
+    border-right:1px solid #edf2f8;
+  }
+  .tab:first-child{
+    color:#4b5a81;
+    background:#f0f5ff;
+  }
+  .content{
+    padding:24px;
+  }
+  .mainCard{
+    background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(250,252,255,.98));
+    border:1px solid #ebf0f8;
+    border-radius:28px;
+    box-shadow:0 10px 28px rgba(84,99,146,.06);
+    overflow:hidden;
+  }
+  .cardHead{
+    padding:18px 20px;
+    background:linear-gradient(90deg,#f4f8ff,#fff6fb);
+    border-bottom:1px solid #edf2f8;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .cardTitle{
+    font-size:26px;
+    font-weight:900;
+    color:#47557a;
+    letter-spacing:.04em;
+  }
+  .cardBadge{
+    padding:8px 14px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #e2e9f4;
+    color:#6a7896;
+    font-size:15px;
+    font-weight:800;
+  }
+  .cardBody{
+    padding:20px;
+  }
+  .formGrid{
+    display:grid;
+    grid-template-columns: 240px 1fr;
+    gap:16px 16px;
+    align-items:center;
+  }
+  label{
+    font-size:24px;
+    font-weight:900;
+    color:#46536f;
+  }
+  input[type="date"], input[type="text"], textarea{
+    width:100%;
+    min-height:62px;
+    border-radius:18px;
+    border:2px solid #e5ebf4;
+    background:#fff;
+    padding:14px 18px;
+    font-size:25px;
+    color:#394866;
+    outline:none;
+    transition:.15s ease;
+  }
+  textarea{
+    min-height:170px;
+    resize:vertical;
+    line-height:1.6;
+  }
+  input:focus, textarea:focus{
+    border-color:#bfd0ff;
+    box-shadow:0 0 0 4px rgba(109,127,255,.08);
+  }
+  .moneyWrap{
+    position:relative;
+  }
+  .moneyWrap span{
+    position:absolute;
+    left:18px; top:50%;
+    transform:translateY(-50%);
+    font-size:25px;
+    font-weight:900;
+    color:#7f8aa5;
+  }
+  .moneyWrap input{ padding-left:76px; }
+  .helper{
+    margin-top:18px;
+    padding:16px 18px;
+    border-radius:20px;
+    background:linear-gradient(90deg,#f8fbff,#fff9fc);
+    border:1px dashed #d9e3f1;
+    font-size:19px;
+    line-height:1.8;
+    color:#67738f;
+  }
+  .block{
+    margin-top:18px;
+    padding:18px;
+    border-radius:22px;
+    background:linear-gradient(180deg,#fbfdff,#f7faff);
+    border:1px solid #e4ebf7;
+  }
+  .blockTitle{
+    font-size:28px;
+    font-weight:900;
+    color:#4a577b;
+    margin-bottom:12px;
+  }
+  .sigPad{
+    width:100%;
+    height:180px;
+    display:block;
+    border-radius:20px;
+    border:2px dashed #cad7e9;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.98));
+    touch-action:none;
+  }
+  .hint{
+    margin-top:10px;
+    text-align:center;
+    font-size:18px;
+    color:#7d879d;
+  }
+  .signDateRow{
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .signDateLabel{
+    font-size:21px;
+    font-weight:900;
+    color:#53617f;
+    letter-spacing:.04em;
+  }
+  .signDateInput{
+    flex:1;
+    min-width:220px;
+    min-height:54px;
+    border-radius:16px;
+    border:2px solid #e5ebf4;
+    background:#fff;
+    padding:10px 16px;
+    font-size:22px;
+    color:#394866;
+    outline:none;
+    transition:.15s ease;
+  }
+  .signDateInput:focus{
+    border-color:#bfd0ff;
+    box-shadow:0 0 0 4px rgba(109,127,255,.08);
+  }
+  .signDateInput.isLocked{
+    background:linear-gradient(180deg,#f3f6fb,#edf2fa);
+    color:#66738f;
+    border-color:#d5dfef;
+    opacity:1;
+    cursor:not-allowed;
+  }
+  .actions{
+    padding:6px 24px 28px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  button{
+    min-width:178px;
+    min-height:62px;
+    border:none;
+    border-radius:18px;
+    padding:12px 20px;
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:.03em;
+    cursor:pointer;
+  }
+  .btn1{background:#f1f4f9;color:#3d4b66}
+  .btn2{background:#fff;border:2px solid #e1e8f3;color:#3d4b66}
+  .btn3{background:linear-gradient(90deg,#59d7c7,#748dff);color:#fff; box-shadow:0 10px 24px rgba(96,136,255,.22)}
+  .statusBanner{
+    display:none;
+    margin:0 24px 20px;
+    padding:16px 18px;
+    border-radius:18px;
+    background:linear-gradient(90deg,#eef8f5,#f3f6ff);
+    border:1px solid #dce8f4;
+    color:#4b5c7f;
+    font-size:18px;
+    font-weight:900;
+    text-align:center;
+  }
+  .statusBanner.isLocked{display:block;}
+  .panelLocked .cardBadge{
+    background:linear-gradient(90deg,#eef8f5,#f3f6ff);
+    color:#4e6587;
+    border-color:#dbe5f2;
+  }
+  .panelLocked input, .panelLocked textarea{
+    background:linear-gradient(180deg,#f4f7fb,#eef3fa);
+    color:#66738f;
+  }
+  .panelLocked .sigPad{
+    opacity:.88;
+    filter:saturate(.92);
+  }
+  .panelLocked button{
+    opacity:.55;
+    cursor:not-allowed;
+  }
+  .foot{
+    padding:0 24px 26px;
+    text-align:center;
+    font-size:17px;
+    color:#7e899f;
+  }
+  @media (max-width: 760px){
+    .content{padding:16px}
+    .formGrid{grid-template-columns:1fr}
+    label{font-size:19px}
+    input[type="date"], input[type="text"], textarea{font-size:21px; min-height:54px}
+    textarea{min-height:150px}
+    .cardTitle{font-size:22px}
+    .sigPad{height:150px}
+    .signDateLabel{font-size:18px}
+    .signDateInput{font-size:19px; min-height:50px}
+    button{font-size:21px; min-width:146px; min-height:54px}
+    .tabs{grid-template-columns: repeat(4, minmax(0,1fr));}
+    .tab{font-size:15px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="panel">
+    <div class="hero">
+      <div class="heroRow">
+        <div>
+          <div class="titleWrap">
+            <div class="icon">🧾</div>
+            <div>
+              <h1>支票簽名</h1>
+              <div class="sub">Check Receipt Form</div>
+            </div>
+          </div>
+        </div>
+        <div class="company">
+          <div class="companyName">博馨診所</div>
+          <div class="companyTag">正式版・iPad 觸控優化</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">115年</div>
+      <div class="tab">1月</div>
+      <div class="tab">2月</div>
+      <div class="tab">3月</div>
+      <div class="tab">4月</div>
+      <div class="tab">5月</div>
+      <div class="tab">6月</div>
+      <div class="tab">7月</div>
+      <div class="tab">8月</div>
+      <div class="tab">9月</div>
+      <div class="tab">10月</div>
+      <div class="tab">11月</div>
+      <div class="tab">12月</div>
+    </div>
+
+    <div class="content">
+      <div class="mainCard">
+        <div class="cardHead">
+          <div class="cardTitle">支票簽收表</div>
+          <div class="cardBadge">完整可用版</div>
+        </div>
+        <div class="cardBody">
+          <div class="formGrid">
+            <label for="checkDate">支票開立日期：</label>
+            <input id="checkDate" type="date">
+
+            <label for="checkAmount">支票金額：</label>
+            <div class="moneyWrap">
+              <span>NT$</span>
+              <input id="checkAmount" type="text" inputmode="numeric" placeholder="">
+            </div>
+
+            <label for="vendorName">立支票收款人（廠商名稱）：</label>
+            <textarea id="vendorName" placeholder=""></textarea>
+          </div>
+
+          <div class="helper">
+            支票簽收確認：本表供博馨診所支票領取使用。立支票收款人欄位填寫廠商名稱；下方為領取人與第二欄簽名區。
+          </div>
+
+          <div class="block">
+            <div class="blockTitle">支票領取人：</div>
+            <canvas id="receiverSign1" class="sigPad"></canvas>
+            <div class="hint">第一欄簽名</div>
+            <div class="signDateRow">
+              <div class="signDateLabel">簽名日期：</div>
+              <input id="signDate1" class="signDateInput" type="date">
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="blockTitle">覆核簽名：</div>
+            <canvas id="receiverSign2" class="sigPad"></canvas>
+            <div class="hint">第二欄簽名</div>
+            <div class="signDateRow">
+              <div class="signDateLabel">簽名日期：</div>
+              <input id="signDate2" class="signDateInput" type="date">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn1" id="clearSign1">清除第一欄</button>
+      <button class="btn1" id="clearSign2">清除第二欄</button>
+      <button class="btn2" id="clearAll">清除全部</button>
+      <button class="btn3" id="saveBtn">確認並鎖定</button>
+    </div>
+    <div id="statusBanner" class="statusBanner">此表單已完成確認並鎖定，內容不可再修改。</div>
+    <div class="foot">支票簽收正式鎖定版｜博馨診所｜確認後全表鎖定避免誤改</div>
+  </div>
+</div>
+
+<script>
+  function todayLocal(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth()+1).padStart(2,'0');
+    const d = String(now.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function applyDateLock(dateInputId, locked){
+    const input = document.getElementById(dateInputId);
+    input.disabled = !!locked;
+    input.classList.toggle('isLocked', !!locked);
+  }
+
+  function syncSignedDate(pad, dateInputId){
+    const input = document.getElementById(dateInputId);
+    if(pad.hasSign()){
+      if(!input.value) input.value = todayLocal();
+      applyDateLock(dateInputId, true);
+    }else{
+      applyDateLock(dateInputId, false);
+    }
+  }
+
+
+  function setInteractiveState(isLocked){
+    const panel = document.querySelector('.panel');
+    const statusBanner = document.getElementById('statusBanner');
+    panel.classList.toggle('panelLocked', !!isLocked);
+    statusBanner.classList.toggle('isLocked', !!isLocked);
+
+    ['checkDate','checkAmount','vendorName','signDate1','signDate2'].forEach(id => {
+      const el = document.getElementById(id);
+      if(!el) return;
+      if(id === 'vendorName'){
+        el.readOnly = !!isLocked;
+      }else{
+        el.disabled = !!isLocked;
+      }
+    });
+
+    ['clearSign1','clearSign2','clearAll','saveBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if(btn) btn.disabled = !!isLocked;
+    });
+
+    ['receiverSign1','receiverSign2'].forEach(id => {
+      const canvas = document.getElementById(id);
+      if(canvas) canvas.style.pointerEvents = isLocked ? 'none' : 'auto';
+    });
+
+    const badge = document.querySelector('.cardBadge');
+    if(badge) badge.textContent = isLocked ? '已確認鎖定版' : '完整可用版';
+  }
+
+  function saveLatest(locked){
+    const payload = {
+      clinic: '博馨診所',
+      checkDate: document.getElementById('checkDate').value,
+      checkAmount: document.getElementById('checkAmount').value.trim(),
+      vendorName: document.getElementById('vendorName').value.trim(),
+      signDate1: document.getElementById('signDate1').value,
+      signDate2: document.getElementById('signDate2').value,
+      sign1: pad1.hasSign(),
+      sign2: pad2.hasSign(),
+      locked: !!locked,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('boshin_check_receipt_latest', JSON.stringify(payload));
+  }
+
+  function initSignaturePad(canvasId, clearBtnId){
+    const canvas = document.getElementById(canvasId);
+    const points = [];
+    const changeListeners = [];
+
+    function notifyChange(){
+      changeListeners.forEach(fn => {
+        try{ fn(points.length > 0); }catch(e){}
+      });
+    }
+
+    function resizeCanvas(){
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      const ctx = canvas.getContext('2d');
+      ctx.scale(ratio, ratio);
+      ctx.lineWidth = 2.8;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#274376';
+      redraw();
+    }
+    function redraw(){
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0,0,rect.width,rect.height);
+      if(!points.length) return;
+      ctx.beginPath();
+      points.forEach((p,i)=>{
+        if(i===0 || p.move) ctx.moveTo(p.x,p.y);
+        else ctx.lineTo(p.x,p.y);
+      });
+      ctx.stroke();
+    }
+    function getPoint(e){
+      const rect = canvas.getBoundingClientRect();
+      if(e.touches && e.touches[0]){
+        return {x:e.touches[0].clientX-rect.left, y:e.touches[0].clientY-rect.top};
+      }
+      return {x:e.clientX-rect.left, y:e.clientY-rect.top};
+    }
+    let drawing = false;
+    function start(e){
+      drawing = true;
+      const wasEmpty = points.length === 0;
+      const p = getPoint(e);
+      points.push({x:p.x, y:p.y, move:true});
+      redraw();
+      if(wasEmpty) notifyChange();
+      e.preventDefault();
+    }
+    function move(e){
+      if(!drawing) return;
+      const p = getPoint(e);
+      points.push({x:p.x, y:p.y});
+      redraw();
+      e.preventDefault();
+    }
+    function end(e){
+      drawing = false;
+      e.preventDefault();
+    }
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, {passive:false});
+    canvas.addEventListener('touchmove', move, {passive:false});
+    canvas.addEventListener('touchend', end, {passive:false});
+    window.addEventListener('resize', resizeCanvas);
+    document.getElementById(clearBtnId).addEventListener('click', ()=>{
+      points.length = 0;
+      redraw();
+      notifyChange();
+    });
+    resizeCanvas();
+    return {
+      clear: () => { points.length = 0; redraw(); notifyChange(); },
+      hasSign: () => points.length > 0,
+      onChange: (fn) => {
+        if(typeof fn === 'function') changeListeners.push(fn);
+      }
+    };
+  }
+
+  const pad1 = initSignaturePad('receiverSign1','clearSign1');
+  const pad2 = initSignaturePad('receiverSign2','clearSign2');
+
+  if(!document.getElementById('signDate1').value) document.getElementById('signDate1').value = todayLocal();
+  if(!document.getElementById('signDate2').value) document.getElementById('signDate2').value = todayLocal();
+
+  pad1.onChange(() => syncSignedDate(pad1, 'signDate1'));
+  pad2.onChange(() => syncSignedDate(pad2, 'signDate2'));
+
+  document.getElementById('clearAll').addEventListener('click', ()=>{
+    if(!confirm('要清除全部資料嗎？')) return;
+    document.getElementById('checkDate').value = '';
+    document.getElementById('checkAmount').value = '';
+    document.getElementById('vendorName').value = '';
+    document.getElementById('signDate1').value = todayLocal();
+    document.getElementById('signDate2').value = todayLocal();
+    pad1.clear();
+    pad2.clear();
+    saveLatest(false);
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', ()=>{
+    syncSignedDate(pad1, 'signDate1');
+    syncSignedDate(pad2, 'signDate2');
+
+    if(!confirm('確認後將鎖定整張表，之後不可再修改，是否繼續？')) return;
+
+    saveLatest(true);
+    setInteractiveState(true);
+    alert('已完成確認並鎖定');
+  });
+
+  try{
+    const latest = JSON.parse(localStorage.getItem('boshin_check_receipt_latest') || 'null');
+    if(latest){
+      document.getElementById('checkDate').value = latest.checkDate || '';
+      document.getElementById('checkAmount').value = latest.checkAmount || '';
+      document.getElementById('vendorName').value = latest.vendorName || '';
+      document.getElementById('signDate1').value = latest.signDate1 || todayLocal();
+      document.getElementById('signDate2').value = latest.signDate2 || todayLocal();
+      applyDateLock('signDate1', !!latest.sign1);
+      applyDateLock('signDate2', !!latest.sign2);
+      setInteractiveState(!!latest.locked);
+    }else{
+      applyDateLock('signDate1', false);
+      applyDateLock('signDate2', false);
+      setInteractiveState(false);
+    }
+  }catch(e){
+    applyDateLock('signDate1', false);
+    applyDateLock('signDate2', false);
+    setInteractiveState(false);
+  }
+</script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+</body>
+</html>
